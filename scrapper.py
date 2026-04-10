@@ -42,7 +42,7 @@ def stock_status(soup: BeautifulSoup) -> None | int:
     if not tag:
         return None
 
-    text = tag.get_text(strip=True)
+    text: str = tag.get_text(strip=True)
 
     try:
         return int(text.split("(")[1].split()[0])
@@ -77,8 +77,8 @@ def get_next_page(soup: BeautifulSoup) -> str | None:
 
 
 def get_book_links(soup: BeautifulSoup, base_url: str) -> list[str]:
-    tag = soup.select("h3 > a")
-    return [urljoin(base_url, str(link.get("href", ""))) for link in tag]
+    tags = soup.select("h3 > a")
+    return [urljoin(base_url, str(href)) for tag in tags if (href := tag.get("href"))]
 
 
 def get_all_book_urls(base_url: str) -> list[str]:
@@ -101,7 +101,7 @@ def get_all_book_urls(base_url: str) -> list[str]:
 
 
 def scrape_book(url: str) -> dict:
-    source = get_html(url)
+    source: str = get_html(url)
     soup = BeautifulSoup(source, "lxml")
 
     title: str | None = get_title(soup)

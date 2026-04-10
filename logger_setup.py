@@ -24,7 +24,7 @@ def setup_logging(log_file="app.log", level=logging.DEBUG):
     file = RotatingFileHandler(
         log_file, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
     )
-    file.setLevel(logging.DEBUG)
+    file.setLevel(logging.INFO)
     file.setFormatter(fmt)
 
     root.addHandler(console)

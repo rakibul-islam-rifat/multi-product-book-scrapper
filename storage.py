@@ -32,12 +32,14 @@ def save_to_csv(books: list[dict], filename: str):
 
         for book in books:
             row: dict = {
-                **book,
-                "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                k: (v if v is not None else "N/A")
+                for k, v in {
+                    **book,
+                    "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                }.items()
             }
-            writer.writerow(row)
 
-        logger.info("Saved %d new books to %s", len(books), csv_file.name)
+            writer.writerow(row)
 
 
 def check_price_drop(book, threshold):

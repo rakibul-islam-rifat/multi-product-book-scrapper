@@ -21,7 +21,7 @@ def check_book(url: str, filename: str, threshold: float):
         return
 
     try:
-        books_below_threshold = [
+        books_below_threshold: list[dict] = [
             book for book in books if check_price_drop(book, threshold)
         ]
         if not books_below_threshold:
@@ -29,7 +29,7 @@ def check_book(url: str, filename: str, threshold: float):
 
         else:
             logger.info(
-                "There are around %d books priced below threshold",
+                "There are %d books priced below threshold",
                 len(books_below_threshold),
             )
 
@@ -52,11 +52,16 @@ def check_book(url: str, filename: str, threshold: float):
 
 
 def main():
-    url: str = input("Please input the url:- ")
+    url: str = input("Please input the url:- ").strip()
+    if not url:
+        logger.error("Invalid URL")
+        return
+
     filename: str = input("Please input where you want to save your result:- ")
     if not filename.strip():
         logger.error("Invalid filename")
         return
+
     try:
         threshold = float(input("Please input your budget: "))
     except ValueError:
@@ -67,8 +72,9 @@ def main():
 
     scheduler.add_job(
         func=check_book,
-        trigger="interval",
-        hours=6,
+        trigger="cron",
+        hour=9,
+        minute=0,
         args=[url, filename, threshold],
         next_run_time=datetime.now(),
     )
@@ -76,7 +82,7 @@ def main():
     try:
         scheduler.start()
     except KeyboardInterrupt:
-        logger.warning("Scheduler stopped. Was checking every 6 hours.")
+        logger.warning("\n\nScheduler stopped. Was checking everyday at 9 AM.\n\n")
 
 
 if __name__ == "__main__":
