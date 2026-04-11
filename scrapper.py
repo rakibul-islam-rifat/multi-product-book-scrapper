@@ -9,12 +9,8 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 def get_html(url) -> str:
-    try:
-        response = fetch_url(url)
-        return response.text
-    except Exception as e:
-        logger.error("Failed to Grab Response on this page: %s, Cause: %s", url, e)
-        raise
+    response = fetch_url(url)
+    return response.text
 
 
 def get_title(soup: BeautifulSoup) -> str | None:
@@ -123,15 +119,11 @@ def scrape_book(url: str) -> dict:
 
 
 def scrape_all_book(base_url: str) -> list[dict]:
-    try:
-        all_urls: list[str] = get_all_book_urls(base_url)
-        book_data: list[dict] = [scrape_book(url) for url in all_urls]
-        logger.info(
-            "Scraping finished, stored %d book data from %d urls.",
-            len(book_data),
-            len(all_urls),
-        )
-        return book_data
-    except Exception as e:
-        logger.error("Failed to scrape book data, Cause: %s", e)
-        raise
+    all_urls: list[str] = get_all_book_urls(base_url)
+    book_data: list[dict] = [scrape_book(url) for url in all_urls]
+    logger.info(
+        "Scraping finished, stored %d book data from %d urls.",
+        len(book_data),
+        len(all_urls),
+    )
+    return book_data
